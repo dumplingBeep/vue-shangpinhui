@@ -1,12 +1,20 @@
 <template>
-  <div>
-    <h1>Home</h1>
-  </div>
+  <main>
+    <GroupNav />
+    <GridContent />
+  </main>
 </template>
 
 <script>
+import GroupNav from './GroupNav';
+import GridContent from './GridContent';
+
 export default {
   name: 'Home',
+  components: {
+    GroupNav,
+    GridContent,
+  },
 };
 </script>
 
