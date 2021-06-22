@@ -33,12 +33,39 @@
           </div>
         </div>
       </nav>
+
+      <!-- 轮播图 -->
+      <div class="center-swiper">
+        <!-- Slider main container -->
+        <div
+          @mouseenter="swiper.autoplay.stop()"
+          @mouseleave="swiper.autoplay.start()"
+          class="swiper-container"
+        >
+          <!-- Additional required wrapper -->
+          <div class="swiper-wrapper">
+            <!-- Slides -->
+            <div class="swiper-slide"><img src="./banner1.jpg" alt="banner1" /></div>
+            <div class="swiper-slide"><img src="./banner2.jpg" alt="banner1" /></div>
+            <div class="swiper-slide"><img src="./banner3.jpg" alt="banner1" /></div>
+            <div class="swiper-slide"><img src="./banner4.jpg" alt="banner1" /></div>
+          </div>
+          <!-- If we need pagination -->
+          <div class="swiper-pagination"></div>
+
+          <!-- If we need navigation buttons -->
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { reqSendBaseCategory } from './../../../api/home';
+import Swiper from 'swiper';
+import 'swiper/css/swiper.css';
 
 export default {
   name: 'GridContent',
@@ -58,6 +85,33 @@ export default {
       }
     } catch (error) {
       console.log(error);
+    }
+
+    this.swiper = new Swiper('.swiper-container', {
+      autoplay: {
+        delay: 2000,
+        disableOnInteraction: false,
+      },
+      loop: true, // 循环模式选项
+
+      // 如果需要分页器
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+
+      // 如果需要前进后退按钮
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+
+    //鼠标滑过pagination控制swiper切换
+    for (let i = 0; i < this.swiper.pagination.bullets.length; i++) {
+      this.swiper.pagination.bullets[i].onmouseover = function () {
+        this.click();
+      };
     }
   },
 };
@@ -136,5 +190,13 @@ export default {
     border: none;
     padding: 0;
   }
+}
+
+// 轮播图
+.center-swiper {
+  margin: 5px;
+  width: 730px;
+  position: relative;
+  z-index: 98;
 }
 </style>
