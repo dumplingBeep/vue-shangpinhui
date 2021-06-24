@@ -1,8 +1,8 @@
-import axios from 'axios';
+import request from './../utils/request';
 
-export const reqSendBaseCategory = () => {
-  return axios({
+export const reqGetBaseCategory = () => {
+  return request({
     method: 'GET',
-    url: 'http://39.98.123.211/api/product/getBaseCategoryList',
+    url: '/product/getBaseCategoryList',
   });
 };
