@@ -98,6 +98,7 @@ export default {
           categoryName,
           [`category${level}Id`]: categoryid,
         },
+        params: this.$route.params,
       });
     },
   },

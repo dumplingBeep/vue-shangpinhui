@@ -49,8 +49,14 @@
         </router-link>
         <!-- 搜索模块 -->
         <div class="search-wrap">
-          <form class="search-form" @submit.prevent="goToSearch">
-            <input type="text" class="search-input sm-p-lr" placeholder="请输入搜索信息" />
+          <form @submit.prevent="goToSearch" class="search-form">
+            <input
+              @keydown.enter="goToSearch"
+              v-model="keyword"
+              type="text"
+              class="search-input sm-p-lr"
+              placeholder="请输入搜索信息"
+            />
             <input type="submit" class="search-btn" value="搜索" />
           </form>
         </div>
@@ -62,9 +68,24 @@
 <script>
 export default {
   name: 'Header',
+  data() {
+    return {
+      keyword: '',
+    };
+  },
   methods: {
     goToSearch() {
-      this.$router.history.push('/search');
+      const keyword = this.keyword.trim();
+      const location = {
+        name: 'Search',
+        query: this.$route.query,
+      };
+
+      if (keyword) {
+        location.params = { keyword };
+      }
+
+      this.$router.history.push(location);
     },
   },
 };
