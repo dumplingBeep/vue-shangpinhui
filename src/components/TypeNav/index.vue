@@ -1,11 +1,11 @@
 <template>
-  <nav class="type-nav">
+  <nav @mouseleave="typeNavIsShow = false" class="type-nav">
     <div class="container">
       <!-- 导航栏标题 -->
       <div class="sidebar-nav">
-        <h3 class="sidebar-nav-title">全部商品分类</h3>
+        <h3 @mouseenter="typeNavIsShow = true" class="sidebar-nav-title">全部商品分类</h3>
         <!-- 侧边导航栏 -->
-        <div @click="goToSearch" class="left-sidebar">
+        <div v-show="$route.path === '/' || typeNavIsShow" @click="goToSearch" class="left-sidebar">
           <div v-for="category1 in baseCategoryList" :key="category1.categoryId" class="menu-item">
             <h3 class="menu-title">
               <a
@@ -70,6 +70,7 @@ export default {
   data() {
     return {
       baseCategoryList: [],
+      typeNavIsShow: false,
     };
   },
   async mounted() {
