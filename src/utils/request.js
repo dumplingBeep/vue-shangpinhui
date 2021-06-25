@@ -1,8 +1,10 @@
 import axios from 'axios';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 const request = axios.create({
   baseURL: '/api',
-  timeout: 10000, // 请求超时时间，中断请求
+  timeout: 1000, // 请求超时时间，中断请求
 });
 
 const messages = {
@@ -13,6 +15,7 @@ const messages = {
 };
 
 request.interceptors.request.use((config) => {
+  NProgress.start();
   // 请求成功
   return config;
 });
@@ -20,7 +23,7 @@ request.interceptors.request.use((config) => {
 request.interceptors.response.use(
   (response) => {
     // 响应成功
-    console.log(response);
+    NProgress.done();
 
     if (response.data.code === 200) {
       // 功能成功
@@ -32,6 +35,7 @@ request.interceptors.response.use(
   },
   (error) => {
     // 响应失败
+    NProgress.done();
     let message = '亲,未知错误,请联系客服大大';
 
     if (error.response) {
