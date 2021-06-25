@@ -1,8 +1,8 @@
-import request from './../utils/request';
+import requesMock from '../utils/requesMock';
 
-export const reqGetBaseCategory = () => {
-  return request({
+export const reqGetBanners = () => {
+  return requesMock({
     method: 'GET',
-    url: '/product/getBaseCategoryList',
+    url: '/banners',
   });
 };
