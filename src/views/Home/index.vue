@@ -9,9 +9,7 @@
     <!-- 猜你喜欢 -->
     <Like />
     <!--楼层-->
-    <Floor />
-    <!--楼层-->
-    <Floor />
+    <Floor v-for="floorInfo in floorList" :key="floorInfo.id" :floorInfo="floorInfo" />
     <!--商标-->
     <Brand />
   </main>
@@ -26,6 +24,8 @@ import Floor from './Floor';
 import Brand from './Brand';
 import TodayRecommend from './TodayRecommend';
 
+import { reqGetFloors } from './../../api/home';
+
 export default {
   name: 'Home',
   components: {
@@ -36,6 +36,15 @@ export default {
     Floor,
     Brand,
     TodayRecommend,
+  },
+  data() {
+    return {
+      floorList: [],
+    };
+  },
+  async mounted() {
+    this.floorList = await reqGetFloors();
+    console.log(this.floorList);
   },
 };
 </script>

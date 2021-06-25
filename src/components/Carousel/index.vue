@@ -35,36 +35,41 @@ export default {
     },
   },
   watch: {
-    bannerList() {
-      // 在DOM更新完成后执行回调
-      this.$nextTick(() => {
-        this.swiper = new Swiper(this.$refs.swiper, {
-          autoplay: {
-            delay: 2000,
-            disableOnInteraction: false,
-          },
-          loop: true, // 循环模式选项
+    bannerList: {
+      handler(imgList) {
+        if (!imgList.length) return;
 
-          // 分页器
-          pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-          },
+        // 在DOM更新完成后执行回调
+        this.$nextTick(() => {
+          this.swiper = new Swiper(this.$refs.swiper, {
+            autoplay: {
+              delay: 2000,
+              disableOnInteraction: false,
+            },
+            loop: true, // 循环模式选项
 
-          // 前进后退按钮
-          navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-          },
+            // 分页器
+            pagination: {
+              el: '.swiper-pagination',
+              clickable: true,
+            },
+
+            // 前进后退按钮
+            navigation: {
+              nextEl: '.swiper-button-next',
+              prevEl: '.swiper-button-prev',
+            },
+          });
+
+          //鼠标滑过pagination控制swiper切换
+          for (let i = 0; i < this.swiper.pagination.bullets.length; i++) {
+            this.swiper.pagination.bullets[i].onmouseover = function () {
+              this.click();
+            };
+          }
         });
-
-        //鼠标滑过pagination控制swiper切换
-        for (let i = 0; i < this.swiper.pagination.bullets.length; i++) {
-          this.swiper.pagination.bullets[i].onmouseover = function () {
-            this.click();
-          };
-        }
-      });
+      },
+      immediate: true,
     },
   },
 };
