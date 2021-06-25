@@ -44,7 +44,6 @@ export default {
   },
   async mounted() {
     this.floorList = await reqGetFloors();
-    console.log(this.floorList);
   },
 };
 </script>
