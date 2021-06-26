@@ -43,23 +43,38 @@
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{ active: order.orderName === '1' }">
+                  <a @click="setOrderType('1')">
+                    综合
+                    <span
+                      v-show="order.orderName === '1'"
+                      :class="{
+                        iconfont: true,
+                        ['icon-arrow-' + (order.orderType === 'desc' ? 'down' : 'up')]: true,
+                      }"
+                    ></span>
+                  </a>
                 </li>
                 <li>
-                  <a href="#">销量</a>
+                  <a>销量</a>
                 </li>
                 <li>
-                  <a href="#">新品</a>
+                  <a>新品</a>
                 </li>
                 <li>
-                  <a href="#">评价</a>
+                  <a>评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{ active: order.orderName === '2' }">
+                  <a @click="setOrderType('2')">
+                    价格
+                    <span
+                      v-show="order.orderName === '2'"
+                      :class="[
+                        'iconfont',
+                        'icon-arrow-' + (order.orderType === 'desc' ? 'down' : 'up'),
+                      ]"
+                    ></span>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -138,6 +153,10 @@ export default {
   },
   computed: {
     ...mapState('search', ['goodsList', 'total']),
+    order() {
+      const [orderName, orderType] = this.options.order.split(':');
+      return { orderName, orderType };
+    },
   },
   methods: {
     ...mapActions('search', ['searchGoodsList']),
@@ -195,6 +214,31 @@ export default {
 
     delProp(index) {
       this.options.props.splice(index, 1);
+      this.search();
+    },
+
+    /**
+     * @msg:
+     *  多次点击一个排序，切换排序类型(升序/降序)
+     *  点击切换到其他排序，默认降序开始
+     * @param {*} orderName：排序的名称：综合(1)/价格(2)
+     */
+    setOrderType(orderName) {
+      // 定义默认降序
+      let orderType = 'desc';
+
+      // 判断再次点击的是否还是一个排序：
+      if (this.order.orderName === orderName) {
+        // 是则切换排序类型(升序/降序)
+        orderType = this.order.orderType === 'desc' ? 'asc' : 'desc';
+      } else {
+        // 否则切换类型，默认降序
+        orderType = 'desc';
+      }
+
+      // 更新请求参数
+      this.options.order = `${orderName}:${orderType}`;
+      // 更新数据(发送请求)
       this.search();
     },
   },

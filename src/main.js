@@ -6,6 +6,7 @@ import store from './store';
 import './mock';
 import './styles/reset.css';
 import './assets/common.less';
+import './styles/iconfont.css';
 
 Vue.config.productionTip = false;
 
