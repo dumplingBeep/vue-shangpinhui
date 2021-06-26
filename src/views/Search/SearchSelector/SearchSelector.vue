@@ -3,8 +3,12 @@
     <div class="type-wrap logo">
       <div class="fl key brand">品牌</div>
       <div class="value logos">
-        <ul class="logo-list">
-          <li v-for="trademark in trademarkList" :key="trademark.tmId">
+        <ul @click="searchTm" class="logo-list">
+          <li
+            v-for="trademark in trademarkList"
+            :key="trademark.tmId"
+            :data-trademark="`${trademark.tmId}:${trademark.tmName}`"
+          >
             {{ trademark.tmName }}
           </li>
         </ul>
@@ -19,9 +23,9 @@
         {{ attrs.attrName }}
       </div>
       <div class="fl value">
-        <ul class="type-list">
+        <ul @click="searchAttr" class="type-list">
           <li v-for="(attrValue, index) in attrs.attrValueList" :key="index">
-            <a>{{ attrValue }}</a>
+            <a :data-prop="`${attrs.attrId}:${attrValue}:${attrs.attrName}`">{{ attrValue }}</a>
           </li>
         </ul>
       </div>
@@ -35,6 +39,23 @@ import { mapState } from 'vuex';
 
 export default {
   name: 'SearchSelector',
+  methods: {
+    /**
+     * @msg: 事件委托：获取点击品牌的 trademark
+     * @param {*} e：事件对象
+     */
+    searchTm(e) {
+      const { trademark } = e.target.dataset;
+      // 传入参数,调用父组件自定义事件(发送请求)
+      this.$emit('search', { trademark });
+    },
+
+    searchAttr(e) {
+      const { prop } = e.target.dataset;
+      // 传入参数,调用父组件自定义事件(发送请求)
+      this.$emit('search', { prop });
+    },
+  },
   computed: {
     ...mapState('search', ['trademarkList', 'attrsList']),
   },
@@ -112,6 +133,7 @@ export default {
           line-height: 26px;
 
           a {
+            display: block;
             text-decoration: none;
             color: #666;
           }

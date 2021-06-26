@@ -11,24 +11,32 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">
-              iphone
+            <li v-show="$route.params.keyword" @click="delKeyword" class="with-x">
+              {{ $route.params.keyword }}
               <i>×</i>
             </li>
-            <li class="with-x">
-              华为
+            <li v-show="$route.query.categoryName" @click="delCategoryName" class="with-x">
+              {{ $route.query.categoryName }}
               <i>×</i>
             </li>
-            <li class="with-x">
-              OPPO
+            <li v-show="options.trademark" @click="delTrademark" class="with-x">
+              {{ options.trademark.split(':')[1] }}
+              <i>×</i>
+            </li>
+            <li
+              v-for="(prop, index) in options.props"
+              @click="delProp(index)"
+              :key="prop"
+              class="with-x"
+            >
+              {{ prop.slice(prop.indexOf(':') + 1) }}
               <i>×</i>
             </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector @search="search" />
 
         <!--details-->
         <div class="details clearfix">
@@ -137,23 +145,87 @@ export default {
     SearchSelector,
     TypeNav,
   },
+  data() {
+    return {
+      options: {
+        props: [],
+        trademark: '',
+        order: '1:desc',
+        pageNo: 1,
+        pageSize: 10,
+      },
+    };
+  },
+  mounted() {
+    // 首次渲染
+    this.search();
+  },
   computed: {
     ...mapState('search', ['goodsList', 'total']),
   },
   methods: {
     ...mapActions('search', ['searchGoodsList']),
+
+    /**
+     * @msg: 根据条件，查找数据(发送请求)
+     * @param {*} options: 子组件传递(请求参数): 品牌\产品属性
+     */
+    search(options = {}) {
+      // 相同参数退出
+      if (this.options.props.indexOf(options.prop) > -1) return;
+
+      // 接收新参数，合并所有条件
+      const newOptions = {
+        ...this.options,
+        ...options,
+      };
+
+      // 判断子组件传递(请求参数)，是否是产品属性
+      if (options.prop) {
+        this.options.props.push(options.prop);
+        delete newOptions.prop;
+      }
+
+      // 保存最新条件参数
+      this.options = newOptions;
+
+      // 根据最新条件查找数据(发送请求)
+      this.searchGoodsList({
+        ...newOptions,
+        ...this.$route.query,
+        ...this.$route.params,
+      });
+    },
+
+    // 删除搜索条件
+    delKeyword() {
+      this.$router.history.push({
+        name: 'Search',
+        query: this.$route.query,
+      });
+    },
+
+    delCategoryName() {
+      this.$router.history.push({
+        name: 'Search',
+        params: this.$route.params,
+      });
+    },
+
+    delTrademark() {
+      this.options.trademark = '';
+      this.search();
+    },
+
+    delProp(index) {
+      this.options.props.splice(index, 1);
+      this.search();
+    },
   },
-  async mounted() {
-    await this.searchGoodsList({
-      category3Id: '61',
-      categoryName: '手机',
-      keyword: '',
-      order: '1:desc',
-      pageNo: 1,
-      pageSize: 10,
-      props: [],
-      trademark: '',
-    });
+  watch: {
+    $route() {
+      this.search();
+    },
   },
 };
 </script>
