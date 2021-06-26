@@ -1,20 +1,42 @@
 <template>
-  <div class="sui-pagination clearfix">
-    <ul>
-      <li class="prev disabled">
-        <a href="#">«上一页</a>
-      </li>
-      <li v-for="index in Math.ceil(total / pageSize)" :key="index" class="active">
-        <a href="#">{{ index }}</a>
-      </li>
-      <li v-show="Math.ceil(total / pageSize) > 5" class="dotted"><span>...</span></li>
-      <li class="next">
-        <a href="#">下一页»</a>
-      </li>
-    </ul>
-    <div>
-      <span>共{{ Math.ceil(total / pageSize) }}页&nbsp;</span>
-    </div>
+  <div class="pagination">
+    <!-- 左箭头 -->
+    <button @click="myCurrentPage--" :disabled="myCurrentPage === 1">&lt;</button>
+
+    <!-- 页码1 -->
+    <button :class="{ active: myCurrentPage === 1 }" @click="myCurrentPage = 1">1</button>
+    <button v-show="startAndEnd.start > 2">...</button>
+
+    <!-- 中间页码 -->
+    <button
+      v-for="item in startAndEnd.end - startAndEnd.start + 1"
+      :key="item"
+      :class="{ active: myCurrentPage === getCurrentPage(item) }"
+      @click="myCurrentPage = getCurrentPage(item)"
+    >
+      {{ getCurrentPage(item) }}
+    </button>
+
+    <button v-show="startAndEnd.end < totalPages - 1">...</button>
+    <!-- 最后一页 -->
+    <button
+      v-show="totalPages > 1"
+      :class="{ active: myCurrentPage === totalPages }"
+      @click="myCurrentPage = totalPages"
+    >
+      {{ totalPages }}
+    </button>
+
+    <!-- 右箭头 -->
+    <button @click="myCurrentPage++" :disabled="myCurrentPage >= totalPages">&gt;</button>
+
+    <!-- 每页条数 -->
+    <select v-model="myPageSize" class="pagination-select">
+      <option v-for="size in pageSizes" :key="size" :value="size">每页 {{ size }} 条</option>
+    </select>
+
+    <!-- 总数 -->
+    <span class="pagination-total">共 {{ total }} 条</span>
   </div>
 </template>
 
@@ -22,101 +44,154 @@
 export default {
   name: 'Pagination',
   props: {
+    // 数据总数
     total: {
       type: Number,
       required: true,
     },
-    pageSize: {
+    // 当前页码
+    'current-page': {
+      type: Number,
+      required: true,
+    },
+    //
+    'page-sizes': {
+      type: Array,
+      required: true,
+    },
+    // 每页条数
+    'page-size': {
       type: Number,
       required: true,
     },
   },
+  data() {
+    return {
+      myCurrentPage: this.currentPage,
+      myPageSize: this.pageSize,
+    };
+  },
+  methods: {
+    getCurrentPage(item) {
+      return item + this.startAndEnd.start - 1;
+    },
+  },
+  computed: {
+    // 总页数
+    totalPages() {
+      return Math.ceil(this.total / this.myPageSize);
+    },
+
+    // 当前页码前后页
+    startAndEnd() {
+      const { myCurrentPage, totalPages } = this;
+
+      if (totalPages <= 1) {
+        return {
+          start: 1,
+          end: 0,
+        };
+      }
+
+      if (totalPages <= 7) {
+        return {
+          start: 2,
+          end: totalPages - 1,
+        };
+      }
+
+      // 起始页
+      let start = myCurrentPage - 2;
+
+      if (start < 2) start = 2;
+
+      // 结束页
+      let end = start + 5 - 1;
+
+      if (end > totalPages - 1) {
+        end = totalPages - 1;
+        start = end - 4;
+      }
+
+      if (totalPages < end) {
+        end = totalPages;
+      }
+
+      return {
+        start,
+        end,
+      };
+    },
+  },
   watch: {
-    total() {
-      console.log(this.total);
+    /**
+     * @msg: 监视 myCurrentPage：
+     *  发生改变调用父组件方法更新数据(发送请求)
+     * @param {*} currentPage: 最新 myCurrentPage 的值，传递给父组件方法
+     */
+    myCurrentPage(currentPage) {
+      this.$emit('current-change', currentPage);
+    },
+
+    /**
+     * @msg: 监视 myPageSize
+     *  发生改变调用父组件方法更新数据(发送请求)
+     * @param {*} currentPage: 最新 myPageSize 的值，传递给父组件方法
+     */
+    myPageSize(pageSize) {
+      this.$emit('size-change', pageSize);
     },
   },
 };
 </script>
 
 <style lang="less" scoped>
-.sui-pagination {
-  margin: 18px 0;
+.pagination {
+  display: flex;
+  justify-content: center;
 
-  ul {
-    margin-left: 0;
-    margin-bottom: 0;
-    vertical-align: middle;
-    width: 490px;
-    float: left;
+  button {
+    outline: none;
+    border: none;
+    margin: 0 5px;
+    width: 30px;
+    height: 30px;
+    background-color: #f4f4f5;
+    color: #303133;
+    font-weight: 700;
+    border-radius: 2px;
+    cursor: pointer;
 
-    li {
-      line-height: 18px;
-      display: inline-block;
+    &.active {
+      background-color: #409eff;
+      color: #fff;
+    }
 
-      a {
-        position: relative;
-        float: left;
-        line-height: 18px;
-        text-decoration: none;
-        background-color: #fff;
-        border: 1px solid #e0e9ee;
-        margin-left: -1px;
-        font-size: 14px;
-        padding: 9px 18px;
-        color: #333;
-      }
-
-      &.active {
-        a {
-          background-color: #fff;
-          color: #e1251b;
-          border-color: #fff;
-          cursor: default;
-        }
-      }
-
-      &.prev {
-        a {
-          background-color: #fafafa;
-        }
-      }
-
-      &.disabled {
-        a {
-          color: #999;
-          cursor: default;
-        }
-      }
-
-      &.dotted {
-        span {
-          margin-left: -1px;
-          position: relative;
-          float: left;
-          line-height: 18px;
-          text-decoration: none;
-          background-color: #fff;
-          font-size: 14px;
-          border: 0;
-          padding: 9px 18px;
-          color: #333;
-        }
-      }
-
-      &.next {
-        a {
-          background-color: #fafafa;
-        }
-      }
+    &:disabled {
+      color: #c0c4cc;
+      cursor: not-allowed;
     }
   }
 
-  div {
-    color: #333;
-    font-size: 14px;
-    float: right;
-    width: 241px;
+  .pagination-total {
+    display: inline-block;
+    font-size: 13px;
+    min-width: 35.5px;
+    height: 28px;
+    line-height: 28px;
+    vertical-align: top;
+    box-sizing: border-box;
+  }
+
+  .pagination-select {
+    width: 100px;
+    margin: 0 5px;
+    font-size: 12px;
+    border-radius: 3px;
+    border: 1px solid #dcdfe6;
+    outline: none;
+    color: #606266;
+    padding-left: 10px;
   }
 }
 </style>

@@ -115,7 +115,14 @@
             </ul>
           </div>
           <div class="fr page">
-            <Pagination :total="total" :pageSize="options.pageSize" />
+            <Pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="options.pageNo"
+              :page-sizes="[5, 10, 15, 20]"
+              :page-size="options.pageSize"
+              :total="total"
+            />
           </div>
         </div>
       </div>
@@ -239,6 +246,28 @@ export default {
       // 更新请求参数
       this.options.order = `${orderName}:${orderType}`;
       // 更新数据(发送请求)
+      this.search();
+    },
+
+    /**
+     * @msg:
+     *  改变每页展示条数触发事件:
+     *  展示对应条数数据(发送请求)
+     * @param {*} pageSize: 每页展示条数
+     */
+    handleSizeChange(pageSize) {
+      this.options.pageSize = pageSize;
+      this.search();
+    },
+
+    /**
+     * @msg:
+     *  当前页码改变时触发事件：
+     *  展示对应页码的数据(发送请求)
+     * @param {*} currentPage: 当前页码
+     */
+    handleCurrentChange(currentPage) {
+      this.options.pageNo = currentPage;
       this.search();
     },
   },
