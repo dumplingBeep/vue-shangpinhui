@@ -76,7 +76,8 @@
                 <dd
                   v-for="spuSaleAttrValue in spuSaleAttr.spuSaleAttrValueList"
                   :key="spuSaleAttrValue.id"
-                  class="active"
+                  :class="{ active: spuSaleAttrValue.isChecked === '1' }"
+                  @click="spuSaleAttrActive(spuSaleAttrValue, spuSaleAttr.spuSaleAttrValueList)"
                 >
                   {{ spuSaleAttrValue.saleAttrValueName }}
                 </dd>
@@ -349,6 +350,19 @@ export default {
   },
   methods: {
     ...mapActions('detail', ['getGoodsInfo']),
+
+    /**
+     * @msg: 点击选择属性触发事件：
+     * @param {*} spuSaleAttrValue：当前点击属性数据
+     * @param {*} spuSaleAttrValueList: 一个规格（多个属性）数据
+     */
+    spuSaleAttrActive(spuSaleAttrValue, spuSaleAttrValueList) {
+      // 将当前规格，所有属性置为为选中状态
+      spuSaleAttrValueList.forEach((spuSaleAttrValue) => (spuSaleAttrValue.isChecked = '0'));
+
+      // 设置当前点击的属性为选中
+      spuSaleAttrValue.isChecked = '1';
+    },
   },
   mounted() {
     this.getGoodsInfo(this.$route.params.skuId);
@@ -509,6 +523,7 @@ export default {
                 border-right: 1px solid #bbb;
                 border-bottom: 1px solid #bbb;
                 border-left: 1px solid #eee;
+                cursor: pointer;
 
                 &.active {
                   color: green;
