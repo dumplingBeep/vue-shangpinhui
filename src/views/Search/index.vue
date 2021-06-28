@@ -119,7 +119,7 @@
             <Pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
-              :current-page="options.pageNo"
+              :current-page.sync="options.pageNo"
               :page-sizes="[5, 10, 15, 20]"
               :page-size="options.pageSize"
               :total="total"

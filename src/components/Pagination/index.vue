@@ -1,18 +1,20 @@
 <template>
   <div class="pagination">
     <!-- 左箭头 -->
-    <button @click="myCurrentPage--" :disabled="myCurrentPage === 1">&lt;</button>
+    <button @click="$emit('update:currentPage', currentPage - 1)" :disabled="currentPage === 1">
+      &lt;
+    </button>
 
     <!-- 页码1 -->
-    <button :class="{ active: myCurrentPage === 1 }" @click="myCurrentPage = 1">1</button>
+    <button :class="{ active: currentPage === 1 }" @click="currentPage = 1">1</button>
     <button v-show="startAndEnd.start > 2">...</button>
 
     <!-- 中间页码 -->
     <button
       v-for="item in startAndEnd.end - startAndEnd.start + 1"
       :key="item"
-      :class="{ active: myCurrentPage === getCurrentPage(item) }"
-      @click="myCurrentPage = getCurrentPage(item)"
+      :class="{ active: currentPage === getCurrentPage(item) }"
+      @click="$emit('update:currentPage', getCurrentPage(item))"
     >
       {{ getCurrentPage(item) }}
     </button>
@@ -21,14 +23,19 @@
     <!-- 最后一页 -->
     <button
       v-show="totalPages > 1"
-      :class="{ active: myCurrentPage === totalPages }"
-      @click="myCurrentPage = totalPages"
+      :class="{ active: currentPage === totalPages }"
+      @click="$emit('update:currentPage', totalPages)"
     >
       {{ totalPages }}
     </button>
 
     <!-- 右箭头 -->
-    <button @click="myCurrentPage++" :disabled="myCurrentPage >= totalPages">&gt;</button>
+    <button
+      @click="$emit('update:currentPage', currentPage + 1)"
+      :disabled="currentPage >= totalPages"
+    >
+      &gt;
+    </button>
 
     <!-- 每页条数 -->
     <select v-model="myPageSize" class="pagination-select">
@@ -67,12 +74,13 @@ export default {
   },
   data() {
     return {
-      myCurrentPage: this.currentPage,
+      // myCurrentPage: this.currentPage,
       myPageSize: this.pageSize,
     };
   },
   methods: {
     getCurrentPage(item) {
+      console.log(item + this.startAndEnd.start - 1);
       return item + this.startAndEnd.start - 1;
     },
   },
@@ -84,7 +92,7 @@ export default {
 
     // 当前页码前后页
     startAndEnd() {
-      const { myCurrentPage, totalPages } = this;
+      const { currentPage, totalPages } = this;
 
       if (totalPages <= 1) {
         return {
@@ -101,7 +109,7 @@ export default {
       }
 
       // 起始页
-      let start = myCurrentPage - 2;
+      let start = currentPage - 2;
 
       if (start < 2) start = 2;
 
@@ -125,20 +133,25 @@ export default {
   },
   watch: {
     /**
-     * @msg: 监视 myCurrentPage：
+     * @msg: 监视 currentPage
      *  发生改变调用父组件方法更新数据(发送请求)
      * @param {*} currentPage: 最新 myCurrentPage 的值，传递给父组件方法
      */
-    myCurrentPage(currentPage) {
+    currentPage(currentPage) {
       this.$emit('current-change', currentPage);
     },
 
     /**
      * @msg: 监视 myPageSize
      *  发生改变调用父组件方法更新数据(发送请求)
-     * @param {*} currentPage: 最新 myPageSize 的值，传递给父组件方法
+     * @param {*} pageSize: 最新 myPageSize 的值，传递给父组件方法
      */
     myPageSize(pageSize) {
+      if (this.currentPage > this.totalPages) {
+        console.log(1);
+        this.$emit('update:currentPage', this.totalPages);
+      }
+      console.log(1);
       this.$emit('size-change', pageSize);
     },
   },
