@@ -138,7 +138,7 @@ nav.type-nav {
   position: absolute;
   top: 47px;
   left: 0;
-  z-index: 99;
+  z-index: 999;
 
   a:hover {
     text-decoration: none;

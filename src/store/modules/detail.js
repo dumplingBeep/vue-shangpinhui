@@ -3,7 +3,9 @@ import { reqGetGoodsInfo } from './../../api/detail';
 const state = {
   goodsInfo: {
     categoryView: {},
-    skuInfo: {},
+    skuInfo: {
+      skuImageList: [],
+    },
     spuSaleAttrList: [],
   },
 };
