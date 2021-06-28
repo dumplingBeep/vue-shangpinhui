@@ -1,6 +1,12 @@
 <template>
   <div class="controls">
-    <input :value="count" @blur="handleBlur" autocomplete="off" class="itxt" />
+    <input
+      :value="count"
+      @blur="handleBlur"
+      @click.enter="handleBlur"
+      autocomplete="off"
+      class="itxt"
+    />
     <a
       @click="count = count >= max ? max : ++count"
       :class="{ plus: true, disabled: count === max }"
