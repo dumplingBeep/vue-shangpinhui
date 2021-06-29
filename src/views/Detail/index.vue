@@ -86,7 +86,7 @@
             <div class="cartWrap">
               <InputNum v-model="num" :num="num" :min="1" :max="99" />
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <a @click="addCard">加入购物车</a>
               </div>
             </div>
           </div>
@@ -330,6 +330,7 @@ import Zoom from './Zoom/Zoom';
 import TypeNav from './../../components/TypeNav';
 import InputNum from './InputNum';
 import { mapState, mapActions } from 'vuex';
+import { reqAddCart } from '../../api/addCart';
 
 export default {
   name: 'Detail',
@@ -362,6 +363,46 @@ export default {
 
       // 设置当前点击的属性为选中
       spuSaleAttrValue.isChecked = '1';
+    },
+
+    async addCard() {
+      const { skuDefaultImg, price: skuPrice, skuName } = this.goodsInfo.skuInfo;
+
+      // 获取商品，选中的规格参数
+      const skuAttrs = this.goodsInfo.spuSaleAttrList
+        .map((spuSaleAttr) =>
+          spuSaleAttr.spuSaleAttrValueList.find(
+            (spuSaleAttrValue) => spuSaleAttrValue.isChecked === '1'
+          )
+        )
+        // 处理数据(留下用到的数据)
+        .map((spuSaleAttrValue) => ({
+          saleAttrName: spuSaleAttrValue.saleAttrName,
+          saleAttrValueName: spuSaleAttrValue.saleAttrValueName,
+          id: spuSaleAttrValue.id,
+        }));
+      console.log(skuAttrs);
+
+      try {
+        await reqAddCart(this.$route.params.skuId, this.num);
+
+        // sessionStorage
+        sessionStorage.setItem(
+          'goods',
+          JSON.stringify({
+            skuDefaultImg,
+            skuPrice,
+            skuName,
+            skuNum: this.num,
+            skuAttrs,
+            skuId: this.$route.params.skuId,
+          })
+        );
+
+        this.$router.history.push('/addcart');
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
   mounted() {
