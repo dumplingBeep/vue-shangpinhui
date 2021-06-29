@@ -6,6 +6,8 @@ import Search from '../views/Search';
 import Login from '../views/Login';
 import Register from '../views/Register';
 import Detail from '../views/Detail';
+import AddCart from '../views/AddCart';
+import ShopCart from './../views/ShopCart';
 
 Vue.use(VueRouter);
 
@@ -43,6 +45,16 @@ const routes = [
     meta: {
       isFooterHide: true,
     },
+  },
+  {
+    path: '/addcart',
+    name: 'AddCart',
+    component: AddCart,
+  },
+  {
+    path: '/shopcart',
+    name: 'ShopCart',
+    component: ShopCart,
   },
 ];
 
