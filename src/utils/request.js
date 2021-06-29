@@ -1,6 +1,7 @@
 import axios from 'axios';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import getUid from './uid';
 
 NProgress.configure({ showSpinner: false });
 
@@ -18,6 +19,8 @@ const messages = {
 
 request.interceptors.request.use((config) => {
   NProgress.start();
+  config.headers.userTempId = getUid();
+
   // 请求成功
   return config;
 });

@@ -330,7 +330,7 @@ import Zoom from './Zoom/Zoom';
 import TypeNav from './../../components/TypeNav';
 import InputNum from './InputNum';
 import { mapState, mapActions } from 'vuex';
-import { reqAddCart } from '../../api/addCart';
+import { reqAddCart } from '../../api/shopcart';
 
 export default {
   name: 'Detail',
@@ -381,7 +381,6 @@ export default {
           saleAttrValueName: spuSaleAttrValue.saleAttrValueName,
           id: spuSaleAttrValue.id,
         }));
-      console.log(skuAttrs);
 
       try {
         await reqAddCart(this.$route.params.skuId, this.num);
@@ -586,6 +585,7 @@ export default {
                 height: 36px;
                 line-height: 36px;
                 display: block;
+                cursor: pointer;
               }
             }
           }

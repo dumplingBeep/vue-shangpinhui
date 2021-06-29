@@ -77,7 +77,6 @@ export default {
         count = this.max;
       }
 
-      console.log(1);
       this.count = count;
       this.$emit('input', count);
     },

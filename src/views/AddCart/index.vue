@@ -126,6 +126,7 @@ export default {
           text-decoration: none;
           box-sizing: border-box;
           border: 1px solid #e1e1e1;
+          cursor: pointer;
         }
 
         a:hover {

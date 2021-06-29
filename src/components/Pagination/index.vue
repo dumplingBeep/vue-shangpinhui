@@ -80,7 +80,6 @@ export default {
   },
   methods: {
     getCurrentPage(item) {
-      console.log(item + this.startAndEnd.start - 1);
       return item + this.startAndEnd.start - 1;
     },
   },
@@ -148,10 +147,8 @@ export default {
      */
     myPageSize(pageSize) {
       if (this.currentPage > this.totalPages) {
-        console.log(1);
         this.$emit('update:currentPage', this.totalPages);
       }
-      console.log(1);
       this.$emit('size-change', pageSize);
     },
   },
