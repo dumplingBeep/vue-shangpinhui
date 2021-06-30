@@ -20,3 +20,15 @@ export const reqRegister = ({ phone, password, code }) => {
     },
   });
 };
+
+// 登录
+export const reqLogin = ({ phone, password }) => {
+  return request({
+    method: 'POST',
+    url: `/user/passport/login`,
+    data: {
+      phone,
+      password,
+    },
+  });
+};

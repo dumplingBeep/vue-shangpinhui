@@ -94,8 +94,10 @@
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
 import { reqSendCode, reqRegister } from '../../api/user';
-import './validation';
 import { phoneReg } from '../../utils/regs';
+
+import './../../utils/commonValidation';
+import './validation';
 
 export default {
   name: 'Register',

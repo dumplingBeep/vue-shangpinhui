@@ -13,19 +13,33 @@
             </li>
           </ul>
 
-          <div class="content">
-            <form action="##">
-              <div class="input-text clearFix">
+          <ValidationObserver v-slot="{ handleSubmit }" class="content">
+            <form @submit.prevent="handleSubmit(submit)">
+              <ValidationProvider
+                v-slot="{ errors }"
+                rules="phoneRequired|phone"
+                name="phone"
+                tag="div"
+                class="input-text clearFix"
+              >
                 <span></span>
-                <input type="text" placeholder="邮箱/用户名/手机号" />
-              </div>
-              <div class="input-text clearFix">
+                <input v-model="user.phone" type="text" placeholder="邮箱/用户名/手机号" />
+                <p>{{ errors[0] }}</p>
+              </ValidationProvider>
+              <ValidationProvider
+                v-slot="{ errors }"
+                rules="phoneRequired|password"
+                name="password"
+                tag="div"
+                class="input-text clearFix"
+              >
                 <span class="pwd"></span>
-                <input type="text" placeholder="请输入密码" />
-              </div>
+                <input v-model="user.password" type="text" placeholder="请输入密码" />
+                <p>{{ errors[0] }}</p>
+              </ValidationProvider>
               <div class="setting clearFix">
                 <label class="checkbox inline">
-                  <input name="m1" type="checkbox" value="2" checked="" />
+                  <input type="checkbox" v-model="isAutoLogin" />
                   自动登录
                 </label>
                 <span class="forget">忘记密码？</span>
@@ -42,7 +56,7 @@
               </ul>
               <router-link class="register" to="/register">立即注册</router-link>
             </div>
-          </div>
+          </ValidationObserver>
         </div>
       </div>
     </div>
@@ -65,8 +79,43 @@
 </template>
 
 <script>
+import { ValidationObserver, ValidationProvider } from 'vee-validate';
+import { mapActions } from 'vuex';
+
+import './../../utils/commonValidation';
+
 export default {
   name: 'Login',
+  data() {
+    return {
+      user: {
+        phone: '',
+        password: '',
+      },
+      isAutoLogin: false,
+    };
+  },
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+  },
+
+  methods: {
+    ...mapActions('user', ['getLoginInfo']),
+    async submit() {
+      const res = await this.getLoginInfo(this.user);
+
+      if (this.isAutoLogin) {
+        localStorage.setItem('user', JSON.stringify(res));
+      } else {
+        sessionStorage.setItem('user', JSON.stringify(res));
+      }
+
+      this.$router.history.push({
+        name: 'Home',
+      });
+    },
+  },
 };
 </script>
 
@@ -166,6 +215,13 @@ export default {
 
               border-radius: 0 2px 2px 0;
               outline: none;
+            }
+
+            p {
+              min-height: 20px;
+              width: 100%;
+              float: left;
+              color: red;
             }
           }
 
