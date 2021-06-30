@@ -6,9 +6,16 @@
       <div class="container">
         <!-- 顶部左边模块 -->
         <ul class="hd-top-user link">
-          尚品汇欢迎您！&nbsp;&nbsp;请
-          <router-link to="/login" class="top-login">登录</router-link>
-          <router-link to="/register" class="style-red">免费注册</router-link>
+          <li>尚品汇欢迎您！&nbsp;&nbsp;</li>
+          <li v-if="nickName" class="user">
+            <span class="sm-m-r">{{ nickName }}</span>
+            <a @click="handleClick">退出登录</a>
+          </li>
+          <li v-else>
+            请
+            <router-link to="/login" class="top-login">登录</router-link>
+            <router-link to="/register" class="style-red">免费注册</router-link>
+          </li>
         </ul>
         <!-- 顶部右边模块 -->
         <ul class="hd-top-nav link">
@@ -66,6 +73,9 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
+import { reqLogout } from './../../api/user';
+
 export default {
   name: 'Header',
   data() {
@@ -73,7 +83,11 @@ export default {
       keyword: '',
     };
   },
+  computed: {
+    ...mapState('user', ['nickName']),
+  },
   methods: {
+    ...mapMutations('user', ['logout']),
     goToSearch() {
       const keyword = this.keyword.trim();
       const location = {
@@ -86,6 +100,13 @@ export default {
       }
 
       this.$router.history.push(location);
+    },
+
+    async handleClick() {
+      await reqLogout();
+      this.logout();
+      localStorage.removeItem('user');
+      sessionStorage.removeItem('user');
     },
   },
 };
@@ -113,6 +134,13 @@ header {
 // 顶部左边用户模块
 .hd-top-user {
   color: #333;
+  display: flex;
+
+  .user {
+    a {
+      cursor: pointer;
+    }
+  }
 }
 
 .top-login {

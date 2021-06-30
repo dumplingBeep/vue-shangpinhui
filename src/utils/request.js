@@ -2,6 +2,7 @@ import axios from 'axios';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import getUid from './uid';
+import store from './../store';
 
 NProgress.configure({ showSpinner: false });
 
@@ -20,6 +21,11 @@ const messages = {
 request.interceptors.request.use((config) => {
   NProgress.start();
   config.headers.userTempId = getUid();
+
+  const token = store.state.user.token;
+  if (token) {
+    config.headers.token = store.state.user.token;
+  }
 
   // 请求成功
   return config;

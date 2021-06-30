@@ -23,10 +23,15 @@ const actions = {
 
 const mutations = {
   GET_LOGIN_INFO(state, res) {
-    console.log(state, res);
     state.name = res.name;
     state.nickName = res.nickName;
     state.token = res.token;
+  },
+
+  logout(state) {
+    state.name = '';
+    state.nickName = '';
+    state.token = '';
   },
 };
 

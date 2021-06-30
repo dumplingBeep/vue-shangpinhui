@@ -80,7 +80,7 @@
 
 <script>
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 
 import './../../utils/commonValidation';
 
@@ -95,11 +95,18 @@ export default {
       isAutoLogin: false,
     };
   },
+  computed: {
+    ...mapState('user', ['name']),
+  },
   components: {
     ValidationObserver,
     ValidationProvider,
   },
-
+  mounted() {
+    if (this.name) {
+      this.$router.history.push('/');
+    }
+  },
   methods: {
     ...mapActions('user', ['getLoginInfo']),
     async submit() {

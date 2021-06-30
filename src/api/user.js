@@ -32,3 +32,11 @@ export const reqLogin = ({ phone, password }) => {
     },
   });
 };
+
+// 退出登录
+export const reqLogout = () => {
+  return request({
+    method: 'GET',
+    url: `/user/passport/logout`,
+  });
+};
