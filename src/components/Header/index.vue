@@ -23,7 +23,7 @@
             <router-link to="/">我的订单</router-link>
           </li>
           <li>
-            <router-link to="/">我的购物车</router-link>
+            <router-link to="/shopcart">我的购物车</router-link>
           </li>
           <li>
             <router-link to="/">我的尚品汇</router-link>

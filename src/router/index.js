@@ -8,6 +8,10 @@ import Register from '../views/Register';
 import Detail from '../views/Detail';
 import AddCart from '../views/AddCart';
 import ShopCart from './../views/ShopCart';
+import Center from './../views/Center';
+import Pay from './../views/Pay';
+import PaySuccess from './../views/PaySuccess';
+import Trade from './../views/Trade';
 
 Vue.use(VueRouter);
 
@@ -55,6 +59,26 @@ const routes = [
     path: '/shopcart',
     name: 'ShopCart',
     component: ShopCart,
+  },
+  {
+    path: '/center',
+    name: 'Center',
+    component: Center,
+  },
+  {
+    path: '/pay',
+    name: 'Pay',
+    component: Pay,
+  },
+  {
+    path: '/paysuccess',
+    name: 'PaySuccess',
+    component: PaySuccess,
+  },
+  {
+    path: '/trade',
+    name: 'Trade',
+    component: Trade,
   },
 ];
 
