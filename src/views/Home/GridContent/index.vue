@@ -248,7 +248,7 @@ export default {
 .service-item-icon {
   display: block;
   height: 40px;
-  background-image: url(./../images/icons.png);
+  background-image: url('./../../../assets/images/icons.png');
 }
 
 // 广告图
