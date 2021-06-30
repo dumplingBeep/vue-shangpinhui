@@ -31,7 +31,10 @@ export default {
   data() {
     return {
       swiper: {
-        autoplay: {},
+        autoplay: {
+          stop: () => {},
+          start: () => {},
+        },
       },
     };
   },
