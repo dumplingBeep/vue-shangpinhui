@@ -28,6 +28,13 @@ import 'swiper/css/swiper.css';
 
 export default {
   name: 'Carousel',
+  data() {
+    return {
+      swiper: {
+        autoplay: {},
+      },
+    };
+  },
   props: {
     bannerList: {
       type: Array,
