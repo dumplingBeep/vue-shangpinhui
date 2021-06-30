@@ -1,44 +1,77 @@
 <template>
   <div class="register-container">
     <!-- 注册内容 -->
-    <div class="register">
-      <h3>
-        注册新用户
-        <span class="go">
-          我有账号，去
-          <a href="login.html" target="_blank">登陆</a>
-        </span>
-      </h3>
-      <div class="content">
-        <label>手机号:</label>
-        <input type="text" placeholder="请输入你的手机号" />
-        <span class="error-msg">错误提示信息</span>
-      </div>
-      <div class="content">
-        <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码" />
-        <img ref="code" src="http://182.92.128.115/api/user/passport/code" alt="code" />
-        <span class="error-msg">错误提示信息</span>
-      </div>
-      <div class="content">
-        <label>登录密码:</label>
-        <input type="text" placeholder="请输入你的登录密码" />
-        <span class="error-msg">错误提示信息</span>
-      </div>
-      <div class="content">
-        <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码" />
-        <span class="error-msg">错误提示信息</span>
-      </div>
-      <div class="controls">
-        <input name="m1" type="checkbox" />
-        <span>同意协议并注册《尚品汇用户协议》</span>
-        <span class="error-msg">错误提示信息</span>
-      </div>
-      <div class="btn">
-        <button>完成注册</button>
-      </div>
-    </div>
+    <ValidationObserver v-slot="{ handleSubmit }">
+      <form class="register" @submit.prevent="handleSubmit(submit)">
+        <h3>
+          注册新用户
+          <span class="go">
+            我有账号，去
+            <router-link to="/login">登陆</router-link>
+          </span>
+        </h3>
+
+        <ValidationProvider
+          class="content"
+          name="phone"
+          rules="phoneRequired|phone"
+          tag="div"
+          v-slot="{ errors }"
+        >
+          <label>手机号:</label>
+          <input type="text" placeholder="请输入你的手机号" v-model="user.phone" />
+          <span class="error-msg">{{ errors[0] }}</span>
+        </ValidationProvider>
+        <ValidationProvider
+          class="content"
+          name="code"
+          rules="codeRequired|code"
+          tag="div"
+          v-slot="{ errors }"
+        >
+          <label>验证码:</label>
+          <input type="text" placeholder="请输入验证码" v-model="user.code" />
+          <button :disabled="isDisabled" @click="sendCode">发送验证码</button>
+          <span class="error-msg">{{ errors[0] }}</span>
+        </ValidationProvider>
+        <ValidationProvider
+          class="content"
+          name="password"
+          rules="passwordRequired|password"
+          tag="div"
+          v-slot="{ errors }"
+        >
+          <label>登录密码:</label>
+          <input type="password" placeholder="请输入你的登录密码" v-model="user.password" />
+          <span class="error-msg">{{ errors[0] }}</span>
+        </ValidationProvider>
+        <ValidationProvider
+          class="content"
+          name="rePassword"
+          :rules="`rePasswordRequired|rePassword:${user.password}`"
+          tag="div"
+          v-slot="{ errors }"
+        >
+          <label>确认密码:</label>
+          <input type="password" placeholder="请输入确认密码" v-model="user.rePassword" />
+          <span class="error-msg">{{ errors[0] }}</span>
+        </ValidationProvider>
+        <ValidationProvider
+          class="controls"
+          name="agreement"
+          rules="agreement"
+          tag="div"
+          v-slot="{ errors }"
+        >
+          <input v-model="agreement" name="agreement" type="checkbox" />
+          <span>同意协议并注册《尚品汇用户协议》</span>
+          <span class="error-msg">{{ errors[0] }}</span>
+        </ValidationProvider>
+        <div class="btn">
+          <button type="submit">完成注册</button>
+        </div>
+      </form>
+    </ValidationObserver>
 
     <!-- 底部 -->
     <div class="copyright">
@@ -59,11 +92,52 @@
 </template>
 
 <script>
-import { ValidationProvider } from 'vee-validate';
+import { ValidationObserver, ValidationProvider } from 'vee-validate';
+import { reqSendCode, reqRegister } from '../../api/user';
+import './validation';
+import { phoneReg } from '../../utils/regs';
 
 export default {
   name: 'Register',
+  data() {
+    return {
+      user: {
+        phone: '',
+        code: '',
+        password: '',
+        rePassword: '',
+      },
+
+      agreement: false,
+    };
+  },
+  methods: {
+    // 注册用户(发送请求)
+    async submit() {
+      try {
+        const { phone, code, password } = this.user;
+        await reqRegister({ phone, code, password });
+
+        // 跳转登录页
+        this.$router.history.push({
+          name: 'Login',
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async sendCode() {
+      const code = await reqSendCode(this.user.phone);
+      console.log(code);
+    },
+  },
+  computed: {
+    isDisabled() {
+      return phoneReg.test(this.user.phone) ? false : true;
+    },
+  },
   components: {
+    ValidationObserver,
     ValidationProvider,
   },
 };
