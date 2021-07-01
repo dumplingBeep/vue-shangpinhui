@@ -6,7 +6,9 @@
     </button>
 
     <!-- 页码1 -->
-    <button :class="{ active: currentPage === 1 }" @click="currentPage = 1">1</button>
+    <button :class="{ active: currentPage === 1 }" @click="$emit('update:currentPage', 1)">
+      1
+    </button>
     <button v-show="startAndEnd.start > 2">...</button>
 
     <!-- 中间页码 -->

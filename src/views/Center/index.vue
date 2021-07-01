@@ -157,32 +157,14 @@
               </table>
             </div>
             <div class="choose-order">
-              <div class="pagination">
-                <ul>
-                  <li class="prev disabled">
-                    <a href="javascript:">«上一页</a>
-                  </li>
-                  <li class="page actived">
-                    <a href="javascript:">1</a>
-                  </li>
-                  <li class="page">
-                    <a href="javascript:">2</a>
-                  </li>
-                  <li class="page">
-                    <a href="javascript:">3</a>
-                  </li>
-                  <li class="page">
-                    <a href="javascript:">4</a>
-                  </li>
-
-                  <li class="next disabled">
-                    <a href="javascript:">下一页»</a>
-                  </li>
-                </ul>
-                <div>
-                  <span>&nbsp;&nbsp;&nbsp;&nbsp;共2页&nbsp;</span>
-                </div>
-              </div>
+              <Pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page.sync="currentPage"
+                :page-sizes="[5, 10, 15, 20]"
+                :page-size="pageSize"
+                :total="total"
+              />
             </div>
           </div>
           <!--猜你喜欢-->
@@ -245,20 +227,29 @@
 
 <script>
 import { reqGetOrderList } from './../../api/order';
+import Pagination from './../../components/Pagination';
 
 export default {
   name: 'Center',
+  components: {
+    Pagination,
+  },
   data() {
     return {
-      page: 1,
-      limit: 4,
       orderList: [],
+      total: 0,
+      currentPage: 1,
+      pageSize: 5,
     };
   },
   async mounted() {
-    const { page, limit } = this;
-    const res = await reqGetOrderList({ page, limit });
+    const { currentPage, pageSize } = this;
+    const res = await reqGetOrderList(currentPage, pageSize);
+
     this.orderList = res.records;
+    this.total = res.total;
+    this.currentPage = res.current;
+    this.pageSize = res.size;
     console.log(res);
   },
   methods: {
@@ -266,6 +257,20 @@ export default {
       return orderDetailList.reduce((p, i) => {
         return p + i.splitTotalAmount;
       }, 0);
+    },
+
+    async handleSizeChange(val) {
+      this.pageSize = val;
+      const { currentPage, pageSize } = this;
+      const res = await reqGetOrderList(currentPage, pageSize);
+      this.orderList = res.records;
+    },
+
+    async handleCurrentChange(val) {
+      this.currentPage = val;
+      const { currentPage, pageSize } = this;
+      const res = await reqGetOrderList(currentPage, pageSize);
+      this.orderList = res.records;
     },
   },
 };

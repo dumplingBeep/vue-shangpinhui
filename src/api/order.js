@@ -51,7 +51,7 @@ export const reqGetOrderStatus = (orderId) => {
 };
 
 // 查询支付订单列表
-export const reqGetOrderList = ({ page, limit }) => {
+export const reqGetOrderList = (page, limit) => {
   return request({
     method: 'GET',
     url: `/order/auth/${page}/${limit}`,
