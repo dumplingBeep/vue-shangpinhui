@@ -20,11 +20,12 @@ const messages = {
 
 request.interceptors.request.use((config) => {
   NProgress.start();
-  config.headers.userTempId = getUid();
 
   const token = store.state.user.token;
   if (token) {
     config.headers.token = store.state.user.token;
+  } else {
+    config.headers.userTempId = getUid();
   }
 
   // 请求成功
