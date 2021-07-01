@@ -33,3 +33,11 @@ export const reqSubmitOrder = ({
     },
   });
 };
+
+// 获取支付二维码
+export const reqGetCode = (orderId) => {
+  return request({
+    method: 'GET',
+    url: `/payment/weixin/createNative/${orderId}`,
+  });
+};

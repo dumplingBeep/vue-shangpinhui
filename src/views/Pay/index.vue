@@ -91,9 +91,9 @@
         </div>
       </div>
     </div>
-    <Dialog :visible.sync="dialogIsVisible" :title="'扫码付款'">
+    <Dialog class="code" :visible.sync="dialogIsVisible" :title="'扫码付款'">
       <template>
-        <p>摩西摩西</p>
+        <img :src="codeImgUrl" alt="code" />
       </template>
       <template #footer>
         <!-- <button class="cancel-btn">取消</button> -->
@@ -105,19 +105,33 @@
 
 <script>
 import Dialog from './.././../components/Dialog';
+import { reqGetCode } from './../../api/order';
+import QRCode from 'qrcode';
 
 export default {
   name: 'Pay',
   data() {
     return {
       dialogIsVisible: false,
+      codeImgUrl: '',
     };
   },
   components: {
     Dialog,
   },
   methods: {
-    handleClick() {
+    async handleClick() {
+      const res = await reqGetCode(this.$route.params.orderId);
+      console.log(res);
+
+      try {
+        // 转码
+        const url = await QRCode.toDataURL(res.codeUrl);
+        this.codeImgUrl = url;
+      } catch (error) {
+        console.log(error);
+      }
+
       this.dialogIsVisible = !this.dialogIsVisible;
     },
   },
@@ -127,6 +141,13 @@ export default {
 <style lang="less" scoped>
 .pay-main {
   margin-bottom: 20px;
+
+  .code {
+    img {
+      display: block;
+      margin: 0 auto;
+    }
+  }
 
   .pay-container {
     margin: 0 auto;
