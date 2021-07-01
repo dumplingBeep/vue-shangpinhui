@@ -110,7 +110,9 @@
                     </i>
                   </div>
                   <div class="operate">
-                    <a class="sui-btn btn-bordered btn-danger">加入购物车</a>
+                    <a @click="addToShopCart(goods.id)" class="sui-btn btn-bordered btn-danger">
+                      加入购物车
+                    </a>
                     <a class="sui-btn btn-bordered">收藏</a>
                   </div>
                 </div>
@@ -138,6 +140,7 @@ import TypeNav from './../../components/TypeNav';
 import SearchSelector from './SearchSelector/SearchSelector';
 import Pagination from './../../components/Pagination';
 import { mapState, mapActions } from 'vuex';
+import { reqAddCart } from './../../api/shopcart';
 
 export default {
   name: 'Search',
@@ -272,6 +275,10 @@ export default {
     handleCurrentChange(currentPage) {
       this.options.pageNo = currentPage;
       this.search();
+    },
+
+    addToShopCart(id) {
+      reqAddCart(id, 1);
     },
   },
   watch: {
