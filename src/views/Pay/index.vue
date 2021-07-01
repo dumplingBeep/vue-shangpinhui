@@ -105,7 +105,7 @@
 
 <script>
 import Dialog from './.././../components/Dialog';
-import { reqGetCode } from './../../api/order';
+import { reqGetCode, reqGetOrderStatus } from './../../api/order';
 import QRCode from 'qrcode';
 
 export default {
@@ -115,6 +115,11 @@ export default {
       dialogIsVisible: false,
       codeImgUrl: '',
     };
+  },
+  mounted() {
+    if (!this.$route.params.orderId) {
+      this.$router.history.push('/center');
+    }
   },
   components: {
     Dialog,
@@ -128,6 +133,12 @@ export default {
         // 转码
         const url = await QRCode.toDataURL(res.codeUrl);
         this.codeImgUrl = url;
+
+        const timer = setInterval(async () => {
+          await reqGetOrderStatus(res.orderId);
+          clearInterval(timer);
+          this.$router.history.push('/paysuccess');
+        }, 1000);
       } catch (error) {
         console.log(error);
       }
