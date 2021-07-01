@@ -33,6 +33,15 @@ export default {
       this.$emit('update:visible', false);
     },
   },
+  watch: {
+    visible(newVal) {
+      if (newVal) {
+        document.documentElement.style.overflowY = 'hidden';
+      } else {
+        document.documentElement.style.overflowY = 'auto';
+      }
+    },
+  },
 };
 </script>
 
