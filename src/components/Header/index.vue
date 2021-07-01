@@ -20,7 +20,7 @@
         <!-- 顶部右边模块 -->
         <ul class="hd-top-nav link">
           <li>
-            <router-link to="/">我的订单</router-link>
+            <router-link to="/center">我的订单</router-link>
           </li>
           <li>
             <router-link to="/shopcart">我的购物车</router-link>
