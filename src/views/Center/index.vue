@@ -103,10 +103,12 @@
                   >
                     <td width="60%">
                       <div class="typographic">
-                        <img :src="orderDetail.imgUrl" :alt="orderDetail.skuName" />
-                        <a href="#" class="block-text">
+                        <router-link :to="`/detail/${orderDetail.skuId}`">
+                          <img :src="orderDetail.imgUrl" :alt="orderDetail.skuName" />
+                        </router-link>
+                        <router-link :to="`/detail/${orderDetail.skuId}`" class="block-text">
                           {{ orderDetail.skuName }}
-                        </a>
+                        </router-link>
                         <span>x{{ orderDetail.skuNum }}</span>
                         <a v-if="orderInfo.orderStatusName !== '未支付'" class="service">
                           售后申请
