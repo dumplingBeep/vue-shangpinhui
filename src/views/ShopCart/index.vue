@@ -56,7 +56,13 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input :checked="isAllChecked" class="chooseAll" type="checkbox" />
+        <input
+          v-model="isAllBtnChecked"
+          :checked="isAllChecked"
+          @change="setAllChecked"
+          class="chooseAll"
+          type="checkbox"
+        />
         <span>全选</span>
       </div>
       <div class="option">
@@ -95,11 +101,13 @@ export default {
   data() {
     return {
       cartInfoList: [],
+      isAllBtnChecked: false,
     };
   },
   async mounted() {
     const cartInfoList = await reqGetShopCartList();
     this.cartInfoList = cartInfoList[0].cartInfoList;
+    this.isAllBtnChecked = +this.isAllChecked;
   },
   computed: {
     // 选中商品总数
@@ -120,10 +128,16 @@ export default {
           return totalPrice;
         }, 0);
     },
-    // 商品是否全选
-    isAllChecked() {
-      // 查找是否有未选中商品, 有则返回 false
-      return !this.cartInfoList.find((cartInfo) => !cartInfo.isChecked);
+    // // 商品是否全选
+    isAllChecked: {
+      get() {
+        // 查找是否有未选中商品, 有则返回 false
+        return !this.cartInfoList.find((cartInfo) => !cartInfo.isChecked);
+      },
+      set(val) {
+        // console.log(val);
+        return val;
+      },
     },
   },
   methods: {
@@ -131,9 +145,10 @@ export default {
      * @msg: 更新商品 checked 状态(发生请求)
      * @param {*} goodsInfo: 商品信息
      */
-    updateGoodsIsChecked(goodsInfo) {
+    async updateGoodsIsChecked(goodsInfo) {
       goodsInfo.isChecked = 1 - goodsInfo.isChecked;
-      reqSetGoodsChecked(goodsInfo.skuId, goodsInfo.isChecked);
+      await reqSetGoodsChecked(goodsInfo.skuId, goodsInfo.isChecked);
+      this.isAllBtnChecked = this.isAllChecked;
     },
 
     /**
@@ -174,6 +189,40 @@ export default {
         this.cartInfoList = this.cartInfoList.filter((goodsInfo) => goodsInfo.skuId !== skuId);
         reqDeleteGoods(skuId);
       }
+    },
+
+    // 全选
+    setAllChecked() {
+      this.isAllBtnChecked = +this.isAllBtnChecked;
+
+      // 过滤得到所有与全选按钮状态不同的商品
+      // 相同状态不请求修改，节省请求数量
+      const checkedCartInfoList = this.cartInfoList.filter(
+        (cartInfo) => cartInfo.isChecked !== this.isAllBtnChecked
+      );
+
+      // 定义数组，保存所有 promise 请求
+      const promiseAll = [];
+      // 遍历过滤后的商品
+      checkedCartInfoList.forEach((checkedCartInfo) => {
+        // 发送请求返回 promise
+        const p = reqSetGoodsChecked(checkedCartInfo.skuId, this.isAllBtnChecked);
+        // 插入数组
+        promiseAll.push(p);
+      });
+
+      // Promise.all：接收一个 promise 的 iterable 类型(array,map,set...)
+      // 会等所有 promise 都返回结果触发回调函数
+      // 注意：
+      //  有一个promise返回reject,则Promise.all(promiseAll)返回失败的promise
+      //  所有promise返回resolve,则Promise.all(promiseAll)返回成功的promise
+      Promise.all(promiseAll)
+        .then(() => {
+          this.cartInfoList.forEach((cartInfo) => (cartInfo.isChecked = this.isAllBtnChecked));
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     },
   },
 };

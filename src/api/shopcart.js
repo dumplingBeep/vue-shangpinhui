@@ -24,7 +24,7 @@ export const reqSetGoodsChecked = (skuID, isChecked) => {
   });
 };
 
-// 更新购物车商品checked状态
+// 删除购物车商品
 export const reqDeleteGoods = (skuId) => {
   return request({
     method: 'DELETE',
