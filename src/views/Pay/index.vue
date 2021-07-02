@@ -11,11 +11,11 @@
             请您在提交订单
             <em class="orange time">4小时</em>
             之内完成支付，超时订单会自动取消。订单号：
-            <em>{{ $route.params.orderId }}</em>
+            <em>{{ $route.query.orderId }}</em>
           </span>
           <span class="fr">
             <em class="lead">应付金额：</em>
-            <em class="orange money">￥{{ $route.params.originalTotalAmount }}</em>
+            <em class="orange money">￥{{ $route.query.originalTotalAmount }}</em>
           </span>
         </div>
       </div>
@@ -95,9 +95,9 @@
       <template>
         <img :src="codeImgUrl" alt="code" />
       </template>
-      <template #footer>
-        <!-- <button class="cancel-btn">取消</button> -->
-        <button>确定</button>
+      <template #footer class="dielog-btns">
+        <button class="cancel-btn">支付遇到问题</button>
+        <button>支付成功</button>
       </template>
     </Dialog>
   </div>
@@ -117,31 +117,31 @@ export default {
     };
   },
   mounted() {
-    if (!this.$route.params.orderId) {
+    if (!this.$route.query.orderId) {
       this.$router.history.push('/center');
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);
   },
   components: {
     Dialog,
   },
   methods: {
     async handleClick() {
-      const res = await reqGetCode(this.$route.params.orderId);
+      const res = await reqGetCode(this.$route.query.orderId);
       console.log(res);
+      clearInterval(this.timer);
 
-      try {
-        // 转码
-        const url = await QRCode.toDataURL(res.codeUrl);
-        this.codeImgUrl = url;
+      // 转码
+      const url = await QRCode.toDataURL(res.codeUrl);
+      this.codeImgUrl = url;
 
-        const timer = setInterval(async () => {
-          await reqGetOrderStatus(res.orderId);
-          clearInterval(timer);
-          this.$router.history.push('/paysuccess');
-        }, 1000);
-      } catch (error) {
-        console.log(error);
-      }
+      this.timer = setInterval(async () => {
+        await reqGetOrderStatus(res.orderId);
+        clearInterval(this.timer);
+        this.$router.history.push('/paysuccess');
+      }, 1000);
 
       this.dialogIsVisible = !this.dialogIsVisible;
     },

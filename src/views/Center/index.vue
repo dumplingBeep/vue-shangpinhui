@@ -140,7 +140,18 @@
                       width="8%"
                       class="center"
                     >
-                      <a class="btn">{{ orderInfo.orderStatusName }}</a>
+                      <router-link
+                        :to="
+                          orderInfo.orderStatusName === '未支付'
+                            ? `/pay?orderId=${orderInfo.id}&originalTotalAmount=${splitTotalAmount(
+                                orderInfo.orderDetailList
+                              )}`
+                            : ''
+                        "
+                        class="btn"
+                      >
+                        {{ orderInfo.orderStatusName }}
+                      </router-link>
                     </td>
                     <td
                       :rowspan="index === 0 ? orderInfo.orderDetailList.length : ''"

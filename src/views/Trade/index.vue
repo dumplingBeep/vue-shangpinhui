@@ -177,7 +177,7 @@ export default {
 
       this.$router.history.push({
         name: 'Pay',
-        params: {
+        query: {
           orderId: res,
           originalTotalAmount: this.originalTotalAmount,
         },
