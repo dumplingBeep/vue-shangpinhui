@@ -93,7 +93,7 @@
     </div>
     <Dialog class="code" :visible.sync="dialogIsVisible" :title="'扫码付款'">
       <template>
-        <img :src="codeImgUrl" alt="code" />
+        <img v-lazy="codeImgUrl" alt="code" />
       </template>
       <template #footer class="dielog-btns">
         <button class="cancel-btn">支付遇到问题</button>

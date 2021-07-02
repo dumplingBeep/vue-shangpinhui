@@ -104,7 +104,7 @@
                     <td width="60%">
                       <div class="typographic">
                         <router-link :to="`/detail/${orderDetail.skuId}`">
-                          <img :src="orderDetail.imgUrl" :alt="orderDetail.skuName" />
+                          <img v-lazy="orderDetail.imgUrl" :alt="orderDetail.skuName" />
                         </router-link>
                         <router-link :to="`/detail/${orderDetail.skuId}`" class="block-text">
                           {{ orderDetail.skuName }}

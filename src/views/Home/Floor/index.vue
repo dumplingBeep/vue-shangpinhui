@@ -18,7 +18,7 @@
               <ul class="jd-list">
                 <li v-for="(keyword, index) in floorInfo.keywords" :key="index">{{ keyword }}</li>
               </ul>
-              <img :src="floorInfo.imgUrl" />
+              <img v-lazy="floorInfo.imgUrl" />
             </div>
             <div class="floorBanner">
               <Carousel :bannerList="floorInfo.carouselList" />
@@ -26,22 +26,22 @@
             <div class="split">
               <span class="floor-x-line"></span>
               <div class="floor-conver-pit">
-                <img :src="floorInfo.recommendList[0]" />
+                <img v-lazy="floorInfo.recommendList[0]" />
               </div>
               <div class="floor-conver-pit">
-                <img :src="floorInfo.recommendList[1]" />
+                <img v-lazy="floorInfo.recommendList[1]" />
               </div>
             </div>
             <div class="split center">
-              <img :src="floorInfo.bigImg" />
+              <img v-lazy="floorInfo.bigImg" />
             </div>
             <div class="split">
               <span class="floor-x-line"></span>
               <div class="floor-conver-pit">
-                <img :src="floorInfo.recommendList[2]" />
+                <img v-lazy="floorInfo.recommendList[2]" />
               </div>
               <div class="floor-conver-pit">
-                <img :src="floorInfo.recommendList[3]" />
+                <img v-lazy="floorInfo.recommendList[3]" />
               </div>
             </div>
           </div>

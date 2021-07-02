@@ -8,7 +8,7 @@
       <div class="goods">
         <div class="left-good">
           <div class="left-pic">
-            <img :src="goodsInfo.skuDefaultImg" :alt="goodsInfo.skuName" />
+            <img v-lazy="goodsInfo.skuDefaultImg" :alt="goodsInfo.skuName" />
           </div>
           <div class="right-info">
             <p class="title">{{ goodsInfo.skuName }}</p>

@@ -1,10 +1,10 @@
 <template>
   <div class="spec-preview">
-    <img :src="currentImageInfo.imgUrl" :alt="currentImageInfo.imgName" />
+    <img v-lazy="currentImageInfo.imgUrl" :alt="currentImageInfo.imgName" />
     <div class="event" @mousemove="handleMove"></div>
     <div class="big">
       <img
-        :src="currentImageInfo.imgUrl"
+        v-lazy="currentImageInfo.imgUrl"
         :alt="currentImageInfo.imgName"
         :style="{ left: bigImgLeft, top: bigImgTop }"
       />

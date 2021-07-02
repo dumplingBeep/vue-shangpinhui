@@ -4,7 +4,7 @@
       <div v-for="(skuImage, index) in skuImageList" :key="skuImage.id" class="swiper-slide">
         <img
           @mouseenter="$emit('update:currentIndex', index)"
-          :src="skuImage.imgUrl"
+          v-lazy="skuImage.imgUrl"
           :alt="skuImage.imgName"
           :class="{
             active: currentIndex === index,

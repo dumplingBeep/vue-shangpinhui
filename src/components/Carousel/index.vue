@@ -10,7 +10,7 @@
     <div class="swiper-wrapper">
       <!-- Slides -->
       <div v-for="banner in bannerList" :key="banner.id" class="swiper-slide">
-        <img :src="banner.imgUrl" :alt="banner.id" />
+        <img v-lazy="banner.imgUrl" :alt="banner.id" />
       </div>
     </div>
     <!-- If we need pagination -->

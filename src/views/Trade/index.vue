@@ -37,7 +37,7 @@
         <h5>商品清单</h5>
         <ul v-for="goods in detailArrayList" :key="goods.id" class="list clearFix">
           <li>
-            <img :src="goods.imgUrl" alt="" />
+            <img v-lazy="goods.imgUrl" alt="" />
           </li>
           <li>
             <p>{{ goods.skuName }}</p>
