@@ -115,56 +115,52 @@
                         </a>
                       </div>
                     </td>
-                    <td
-                      :rowspan="index === 0 ? orderInfo.orderDetailList.length : ''"
-                      v-if="index === 0"
-                      width="8%"
-                      class="center"
-                    >
-                      {{ orderInfo.consignee }}
-                    </td>
-                    <td
-                      :rowspan="index === 0 ? orderInfo.orderDetailList.length : ''"
-                      v-if="index === 0"
-                      width="13%"
-                      class="center"
-                    >
-                      <ul class="unstyled">
-                        <li>总金额¥{{ splitTotalAmount(orderInfo.orderDetailList) }}</li>
-                        <li>在线支付</li>
-                      </ul>
-                    </td>
-                    <td
-                      :rowspan="index === 0 ? orderInfo.orderDetailList.length : ''"
-                      v-if="index === 0"
-                      width="8%"
-                      class="center"
-                    >
-                      <router-link
-                        :to="
-                          orderInfo.orderStatusName === '未支付'
-                            ? `/pay?orderId=${orderInfo.id}&originalTotalAmount=${splitTotalAmount(
-                                orderInfo.orderDetailList
-                              )}`
-                            : ''
-                        "
-                        class="btn"
+                    <template v-if="!index">
+                      <td
+                        :rowspan="index === 0 ? orderInfo.orderDetailList.length : ''"
+                        width="8%"
+                        class="center"
                       >
-                        {{ orderInfo.orderStatusName }}
-                      </router-link>
-                    </td>
-                    <td
-                      :rowspan="index === 0 ? orderInfo.orderDetailList.length : ''"
-                      v-if="index === 0"
-                      width="13%"
-                      class="center"
-                    >
-                      <ul class="unstyled">
-                        <li>
-                          <a href="mycomment.html" target="_blank">评价|晒单</a>
-                        </li>
-                      </ul>
-                    </td>
+                        {{ orderInfo.consignee }}
+                      </td>
+                      <td
+                        :rowspan="index === 0 ? orderInfo.orderDetailList.length : ''"
+                        width="13%"
+                        class="center"
+                      >
+                        <ul class="unstyled">
+                          <li>总金额¥{{ orderInfo.totalAmount }}</li>
+                          <li>在线支付</li>
+                        </ul>
+                      </td>
+                      <td
+                        :rowspan="index === 0 ? orderInfo.orderDetailList.length : ''"
+                        width="8%"
+                        class="center"
+                      >
+                        <router-link
+                          :to="
+                            orderInfo.orderStatusName === '未支付'
+                              ? `/pay?orderId=${orderInfo.id}&originalTotalAmount=${orderInfo.totalAmount}`
+                              : ''
+                          "
+                          class="btn"
+                        >
+                          {{ orderInfo.orderStatusName }}
+                        </router-link>
+                      </td>
+                      <td
+                        :rowspan="index === 0 ? orderInfo.orderDetailList.length : ''"
+                        width="13%"
+                        class="center"
+                      >
+                        <ul class="unstyled">
+                          <li>
+                            <a href="mycomment.html" target="_blank">评价|晒单</a>
+                          </li>
+                        </ul>
+                      </td>
+                    </template>
                   </tr>
                 </tbody>
               </table>
@@ -266,12 +262,6 @@ export default {
     console.log(res);
   },
   methods: {
-    splitTotalAmount(orderDetailList) {
-      return orderDetailList.reduce((p, i) => {
-        return p + i.splitTotalAmount;
-      }, 0);
-    },
-
     async handleSizeChange(val) {
       this.pageSize = val;
       const { currentPage, pageSize } = this;
