@@ -42,6 +42,9 @@ export default {
       }
     },
   },
+  beforeDestroy() {
+    document.documentElement.style.overflowY = 'auto';
+  },
 };
 </script>
 
