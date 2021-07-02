@@ -81,7 +81,7 @@
           <i class="summoney">{{ totalPrice }}</i>
         </div>
         <div class="sumbtn">
-          <router-link to="/trade" class="sum-btn">结算</router-link>
+          <a @click="settlement" class="sum-btn">结算</a>
         </div>
       </div>
     </div>
@@ -261,6 +261,15 @@ export default {
         this.cartInfoList = newCartInfoList;
         this.visible = false;
       });
+    },
+
+    // 结算
+    settlement() {
+      if (!this.totalNum) {
+        this.visible = true;
+        return;
+      }
+      this.$router.history.push('/trade');
     },
   },
 };
