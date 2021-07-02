@@ -9,8 +9,13 @@
     <!-- Additional required wrapper -->
     <div class="swiper-wrapper">
       <!-- Slides -->
-      <div v-for="banner in bannerList" :key="banner.id" class="swiper-slide">
-        <img v-lazy="banner.imgUrl" :alt="banner.id" />
+      <div v-for="(banner, index) in bannerList" :key="banner.id" class="swiper-slide">
+        <img
+          v-if="index === 0 || index === bannerList.length - 1"
+          :src="banner.imgUrl"
+          :alt="banner.id"
+        />
+        <img v-else v-lazy="banner.imgUrl" :alt="banner.id" />
       </div>
     </div>
     <!-- If we need pagination -->
