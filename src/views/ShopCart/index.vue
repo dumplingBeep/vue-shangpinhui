@@ -66,7 +66,7 @@
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
+        <a @click="visible = true">删除选中的商品</a>
         <a href="#none">移到我的关注</a>
         <a href="#none">清除下柜商品</a>
       </div>
@@ -85,6 +85,15 @@
         </div>
       </div>
     </div>
+    <Dialog :visible.sync="visible" title="提示">
+      <template>
+        <p class="tip-text sm-m-tb">{{ totalNum ? '删除选中商品' : '请至少选中一件商品！' }}</p>
+      </template>
+      <template #footer>
+        <button @click="visible = false" v-show="totalNum" class="cancel-btn">取消</button>
+        <button @click="confirm">{{ totalNum ? '确定' : '知道了' }}</button>
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -95,13 +104,18 @@ import {
   reqAddCart,
   reqDeleteGoods,
 } from './../../api/shopcart';
+import Dialog from './../../components/Dialog';
 
 export default {
   name: 'ShopCart',
+  components: {
+    Dialog,
+  },
   data() {
     return {
       cartInfoList: [],
       isAllBtnChecked: false,
+      visible: false,
     };
   },
   async mounted() {
@@ -135,7 +149,6 @@ export default {
         return !this.cartInfoList.find((cartInfo) => !cartInfo.isChecked);
       },
       set(val) {
-        // console.log(val);
         return val;
       },
     },
@@ -224,11 +237,41 @@ export default {
           console.log(e);
         });
     },
+
+    // 删除选中商品
+    confirm() {
+      // 判断是否有选中商品，没有则退出隐藏
+      if (!this.totalNum) {
+        this.visible = false;
+        return;
+      }
+
+      const promiseAll = new Set();
+      const newCartInfoList = this.cartInfoList.reduce((p, cartInfo) => {
+        if (cartInfo.isChecked) {
+          promiseAll.add(reqDeleteGoods(cartInfo.skuId));
+        } else {
+          p.push(cartInfo);
+        }
+
+        return p;
+      }, []);
+
+      Promise.all(promiseAll).then(() => {
+        this.cartInfoList = newCartInfoList;
+        this.visible = false;
+      });
+    },
   },
 };
 </script>
 
 <style lang="less" scoped>
+.tip-text {
+  text-align: center;
+  font-size: 22px;
+}
+
 .cart {
   width: 1200px;
   margin: 0 auto;
@@ -404,6 +447,7 @@ export default {
         float: left;
         padding: 0 10px;
         color: #666;
+        cursor: pointer;
       }
     }
 
