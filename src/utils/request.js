@@ -24,9 +24,11 @@ request.interceptors.request.use((config) => {
   const token = store.state.user.token;
   if (token) {
     config.headers.token = store.state.user.token;
-  } else {
-    config.headers.userTempId = getUid();
   }
+  // else {
+  //   config.headers.userTempId = getUid();
+  // }
+  config.headers.userTempId = getUid();
 
   // 请求成功
   return config;
