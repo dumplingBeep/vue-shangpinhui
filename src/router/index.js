@@ -70,7 +70,7 @@ const routes = [
     name: 'Pay',
     component: Pay,
     beforeEnter: (to, from, next) => {
-      if (from.name === 'Pay' || from.name === 'Center') {
+      if (from.name === 'Trade' || from.name === 'Center') {
         next();
         return;
       }
@@ -82,7 +82,7 @@ const routes = [
     name: 'PaySuccess',
     component: PaySuccess,
     beforeEnter: (to, from, next) => {
-      if (from.name === 'Trade') {
+      if (from.name === 'Pay') {
         next();
         return;
       }
