@@ -116,11 +116,6 @@ export default {
       codeImgUrl: '',
     };
   },
-  mounted() {
-    if (!this.$route.query.orderId) {
-      this.$router.history.push('/center');
-    }
-  },
   beforeDestroy() {
     clearInterval(this.timer);
   },

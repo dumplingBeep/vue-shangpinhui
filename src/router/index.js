@@ -69,16 +69,37 @@ const routes = [
     path: '/pay',
     name: 'Pay',
     component: Pay,
+    beforeEnter: (to, from, next) => {
+      if (from.name === 'Pay' || from.name === 'Center') {
+        next();
+        return;
+      }
+      next(from);
+    },
   },
   {
     path: '/paysuccess',
     name: 'PaySuccess',
     component: PaySuccess,
+    beforeEnter: (to, from, next) => {
+      if (from.name === 'Trade') {
+        next();
+        return;
+      }
+      next(from);
+    },
   },
   {
     path: '/trade',
     name: 'Trade',
     component: Trade,
+    beforeEnter: (to, from, next) => {
+      if (from.name === 'ShopCart') {
+        next();
+        return;
+      }
+      next(from);
+    },
   },
 ];
 
