@@ -1,19 +1,19 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home';
-
-import Search from '../views/Search';
-import Login from '../views/Login';
-import Register from '../views/Register';
-import Detail from '../views/Detail';
-import AddCart from '../views/AddCart';
-import ShopCart from './../views/ShopCart';
-import Center from './../views/Center';
-import Pay from './../views/Pay';
-import PaySuccess from './../views/PaySuccess';
-import Trade from './../views/Trade';
 
 Vue.use(VueRouter);
+
+const Home = () => import('../views/Home');
+const Search = () => import('../views/Search');
+const Login = () => import('../views/Login');
+const Register = () => import('../views/Register');
+const Detail = () => import('../views/Detail');
+const AddCart = () => import('../views/AddCart');
+const ShopCart = () => import('../views/ShopCart');
+const Center = () => import('../views/Center');
+const Pay = () => import('../views/Pay');
+const PaySuccess = () => import('../views/PaySuccess');
+const Trade = () => import('../views/Trade');
 
 const routes = [
   {
